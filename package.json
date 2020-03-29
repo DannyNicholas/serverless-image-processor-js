@@ -1,0 +1,16 @@
+{
+  "name": "serverless-image-processor-js",
+  "version": "1.0.0",
+  "description": "Serverless Image Processor",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Danny Nicholas",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.648.0",
+    "serverless-s3-remover": "^0.6.0",
+    "sharp": "^0.25.2"
+  }
+}

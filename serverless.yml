@@ -1,0 +1,73 @@
+## Serverless configuration
+##
+## Defines...
+## 1) Functions - deployable task (e.g. AWS Lamda function)
+## 2) Events - triggers Functions (e.g. S3 bucket upload)
+## 3) Resources - used by Functions (e.g. AWS S3)
+##
+## Every serverless.yml translates to a single AWS CloudFormation template.
+## A CloudFormation stack is created from that resulting CloudFormation template.
+##
+## This configuration creates:
+## 1) Input S3 bucket (for uploaded images)
+## 2) Output S3 bucket (for processes images)
+## 3) Image processing Lamda function
+##
+## The Lamda function is invoked whenever a object (image) is added to the
+## input S3 bucket. This image is processed and stored in the output S3 bucket.
+
+service:
+  name: serverless-image-processor-js
+
+plugins:
+  - serverless-s3-remover
+
+custom:
+  inputBucketName: serverless-image-uploads
+  outputBucketName: serverless-image-processed
+  # Empties buckets before attempting to delete them
+  remover:
+      buckets:
+        - ${self:custom.inputBucketName}
+        - ${self:custom.outputBucketName}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+  environment:
+    PROCESSED_BUCKET: ${self:custom.outputBucketName}
+  tags:
+    Project: Serverless Image Processor JS
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource:
+        - 'arn:aws:s3:::${self:custom.inputBucketName}/*'
+        - 'arn:aws:s3:::${self:custom.outputBucketName}/*'
+
+# Create function that is triggered by creating objects in our upload images bucket.
+# Upload images bucket will also be created.
+functions:
+  imageTransform:
+    handler: handler.imageTransform
+    name: ${self:provider.stage}-serverless-image-processor-js
+    description: image processor lambda
+    memorySize: 512
+    timeout: 30
+    provisionedConcurrency: 5
+    reservedConcurrency: 50
+    events:
+      - s3:
+          bucket: ${self:custom.inputBucketName}
+          event: s3:ObjectCreated:*
+
+# Create our processed images bucket
+resources:
+  Resources:
+    S3BucketProcessedImages:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.outputBucketName}
