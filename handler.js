@@ -1,18 +1,9 @@
 'use strict';
 
-//const lambda = require('aws-lambda');
-const awsSdk = require('aws-sdk');
+const aws = require('aws-sdk');
 const sharp = require('sharp');
-//const promiseResult = require('aws-sdk/lib/request');
-//const S3 = require('aws-sdk/clients/s3');
 
-// import { Callback, Context, Handler, S3EventRecord, S3Event } from 'aws-lambda';
-// import { S3, AWSError } from 'aws-sdk';
-// import * as sharp from 'sharp';
-// import { PromiseResult } from 'aws-sdk/lib/request';
-// import { GetObjectOutput, Body, PutObjectOutput } from 'aws-sdk/clients/s3';
-
-const s3 = new awsSdk.S3({
+const s3 = new aws.S3({
   signatureVersion: 'v4',
 });
 const format = 'jpg';
@@ -86,7 +77,4 @@ module.exports.imageTransform = async (event, context, callback) => {
       callback(Error(err));
     }
   };
-
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };
