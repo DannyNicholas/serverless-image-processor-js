@@ -94,6 +94,44 @@ The important files to maintain are:
 - `handler.ts` : the image processing function triggererd by an upload event.
 
 
+## Monitoring Performance
+
+The performance of the application can be monitored by configuring the application for severless monitoring.
+
+See application dashboard [documentation](https://serverless.com/framework/docs/dashboard/) for more details. Below is a summary of the changes:
+
+Once you have logged-in and registered a new application, in the `serverless.yml` file add the lines at the top of the file using the organisation and application you registered:
+```
+org: <name>
+app: <application-name>
+```
+
+A role must be set-up within AWS to peform the CloudFormation application deployment. This is referred to as the `cfnRole`. This must be created with the following policies:
+
+```
+AWSLambdaFullAccess
+IAMFullAccess
+AmazonS3FullAccess
+CloudWatchFullAccess
+AWSCloudFormationFullAccess
+```
+
+Once created, make a note of the role's ARN.
+
+Within the `provider` declaration add the `cfnRole` with the ARN of the role you created:
+```
+cfnRole: arn:aws:iam::<account-number>:role/<role-name>
+```
+
+Before deploying the application, you must login to the Serverless dashboard with:
+
+```
+serverless login
+```
+
+You can then `deploy` and `remove` the application as normal. After deployment, you will be given a URL to the application's monitoring dashboard.
+
+
 ## Manual Testing and Deployment
 
 For ease of use, it is **highly** recommended to allow Serverless to manage the testing and deployment of the application (as described above).
