@@ -43,9 +43,17 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - s3:*
+        - s3:GetObject
+        - s3:GetObjectAcl
+        - s3:ListBucket
       Resource:
         - 'arn:aws:s3:::${self:custom.inputBucketName}/*'
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - s3:ListBucket
+      Resource:
         - 'arn:aws:s3:::${self:custom.outputBucketName}/*'
 
 # Create function that is triggered by creating objects in our upload images bucket.
