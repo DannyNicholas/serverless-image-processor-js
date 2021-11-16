@@ -9,7 +9,7 @@
   "author": "Danny Nicholas",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.648.0",
+    "aws-sdk": "^2.814.0",
     "serverless-s3-remover": "^0.6.0",
     "sharp": "^0.25.2"
   }
